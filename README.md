@@ -87,7 +87,7 @@ spacy.cli.download("fr_core_news_sm")
 
 ---
 
-### **1Fichier de Configuration OpenNMT**
+### **1 Fichier de Configuration OpenNMT**
 
 ```yaml
 %%writefile /content/opennmt_config.yaml
