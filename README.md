@@ -1,4 +1,4 @@
-## 📖 **Description du projet**
+## **Description du projet**
 Ce projet a été entièrement réalisé sur **Google Colab**, permettant une exécution **directe** des commandes **sans installation manuelle**.  
 Il vise à entraîner et évaluer un **modèle de traduction neuronale** basé sur **OpenNMT** en utilisant des corpus bilingues anglais-français.  
 
@@ -8,11 +8,11 @@ Nous explorons **deux approches linguistiques** :
 
 L'objectif est d'analyser **l'impact de la lemmatisation** sur la qualité des traductions en utilisant le **score BLEU**.
 
-💡 **Exécution facile** : Copiez-collez chaque **cellule** de code dans un notebook **Google Colab** et exécutez-la directement.  
-⚠ **Attention** : L'entraînement du modèle peut être long.  
+ **Exécution facile** : Copiez-collez chaque **cellule** de code dans un notebook **Google Colab** et exécutez-la directement.  
+ **Attention** : L'entraînement du modèle peut être long.  
 
-### 📌 Étape 1 : Installation des Dépendances
-💡 **À exécuter directement sur Colab**
+### Étape 1 : Installation des Dépendances
+ **À exécuter directement sur Colab**
 
 ```bash
 !pip install torch torchvision torchaudio
@@ -33,8 +33,8 @@ spacy.cli.download("fr_core_news_sm")
 
 ---
 
-### 📌 Étape 2 : Vérification d'OpenNMT sur un Petit Corpus
-💡 **Test rapide sur un petit corpus anglais-allemand**
+###  Étape 2 : Vérification d'OpenNMT sur un Petit Corpus
+**Test rapide sur un petit corpus anglais-allemand**
 
 ```bash
 !wget https://s3.amazonaws.com/opennmt-trainingdata/toy-ende.tar.gz
@@ -48,8 +48,8 @@ spacy.cli.download("fr_core_news_sm")
 
 ---
 
-### 📌 Étape 3 : Préparation des Données
-💡 **Téléchargement des corpus Europarl et EMEA et séparation des données**
+###  Étape 3 : Préparation des Données
+**Téléchargement des corpus Europarl et EMEA et séparation des données**
 
 ```bash
 !mkdir -p data/Europarl data/EMEA
@@ -60,7 +60,7 @@ spacy.cli.download("fr_core_news_sm")
 !unzip data/EMEA/en-fr.txt.zip -d data/EMEA
 ```
 
-📌 **Séparation des données en ensembles d'entraînement, validation et test**
+ **Séparation des données en ensembles d'entraînement, validation et test**
 
 ```bash
 !mkdir -p data/split
@@ -83,15 +83,15 @@ spacy.cli.download("fr_core_news_sm")
 !tail -n +13751 data/EMEA/EMEA.en-fr.fr | head -500 > data/split/Emea_test_500.fr
 ```
 
-### 📌 Étape 4 : Entraînement du Modèle (Forme Fléchie)
+###  Étape 4 : Entraînement du Modèle (Forme Fléchie)
 
 ---
 
-### **1️⃣ Fichier de Configuration OpenNMT**
+### **1Fichier de Configuration OpenNMT**
 
 ```yaml
 %%writefile /content/opennmt_config.yaml
-## 🔹 Données d'entraînement et validation
+##  Données d'entraînement et validation
 data:
     corpus_1:
         path_src: /content/data/split/Europarl_train_100k.tok.true.clean.en
@@ -103,11 +103,11 @@ data:
         path_tgt: /content/data/split/Europarl_dev_3750.tok.true.fr
         transforms: [filtertoolong]
 
-## 🔹 Vocabulaire
+##  Vocabulaire
 src_vocab: /content/data/opennmt/vocab.src
 tgt_vocab: /content/data/opennmt/vocab.tgt
 
-## 🔹 Modèle Transformer (Optimisé pour A100)
+##  Modèle Transformer (Optimisé pour le GPU A100 utilisable grâce à Colab Pro)
 model_task: seq2seq
 model_type: text
 encoder_type: transformer
@@ -119,42 +119,42 @@ word_vec_size: 512
 transformer_ff: 2048
 dropout: 0.1
 
-## 🔹 Optimisation et accélération
+## Optimisation et accélération
 optim: adam
-learning_rate: 0.0005  # ✅ Réduction pour éviter instabilité
+learning_rate: 0.0005  #  Réduction pour éviter instabilité
 warmup_steps: 4000
-accum_count: 8  # ✅ Accumulation pour simuler batch plus grand
+accum_count: 8  #  Accumulation pour simuler batch plus grand
 
-## 🔹 Gestion efficace du batch et de la mémoire GPU
-batch_size: 1024  # ✅ Réduction pour éviter OOM
+##  Gestion efficace du batch et de la mémoire GPU
+batch_size: 1024  #  Réduction pour éviter OOM
 valid_batch_size: 8
-max_generator_batches: 2  # ✅ Économie mémoire pour l'inférence
-batch_type: "tokens"  # ✅ Ajustement dynamique pour éviter les pics mémoire
+max_generator_batches: 2  #  Économie mémoire pour l'inférence
+batch_type: "tokens"  #  Ajustement dynamique pour éviter les pics mémoire
 
-## 🔹 Entraînement et checkpoints
-train_steps: 10000  # ✅ Éviter surcharge mémoire sur long training
+##  Entraînement et checkpoints
+train_steps: 10000  #  Éviter surcharge mémoire sur long training
 valid_steps: 1000
 save_checkpoint_steps: 2000
 save_model: /content/model_opennmt/model
 
-## 🔹 GPU et performance (Optimisé)
+##  GPU et performance (Optimisé)
 gpu_ranks: [0]
 world_size: 1
-precision: "float16"  # ✅ FP16 pour économiser mémoire
-num_threads: 4  # ✅ Chargement plus fluide
-queue_size: 10000  # ✅ Équilibrage entre vitesse et mémoire
+precision: "float16"  #  FP16 pour économiser mémoire
+num_threads: 4  #  Chargement plus fluide
+queue_size: 10000  #  Équilibrage entre vitesse et mémoire
 
-## 🔹 Gestion avancée de la mémoire GPU
+##  Gestion avancée de la mémoire GPU
 save_data: /content/model_opennmt
 overwrite: True
-disable_mem_redundancy: True  # ✅ Réduit la redondance mémoire
-exp_global_attn: True  # ✅ Optimisation de l'attention pour mémoire limitée
+disable_mem_redundancy: True  #  Réduit la redondance mémoire
+exp_global_attn: True  #  Optimisation de l'attention pour mémoire limitée
 ```
 
 ---
 
-### **2️⃣ Création du Vocabulaire**
-💡 **Générer le vocabulaire utilisé pour l'entraînement.**
+### **2️ Création du Vocabulaire**
+ **Générer le vocabulaire utilisé pour l'entraînement.**
 
 ```bash
 !onmt_build_vocab -config /content/opennmt_config.yaml -save_data /content/data/opennmt -n_sample 10000
@@ -162,8 +162,8 @@ exp_global_attn: True  # ✅ Optimisation de l'attention pour mémoire limitée
 
 ---
 
-### **3️⃣ Entraînement du Modèle**
-💡 **Lancer l'entraînement du modèle Transformer.**
+### **3️ Entraînement du Modèle**
+ **Lancer l'entraînement du modèle Transformer.**
 
 ```bash
 !onmt_train -config /content/opennmt_config.yaml
@@ -171,8 +171,8 @@ exp_global_attn: True  # ✅ Optimisation de l'attention pour mémoire limitée
 
 ---
 
-### **4️⃣ Traduction**
-💡 **Utilisation du modèle entraîné pour traduire les phrases de test.**
+### **4️ Traduction**
+ **Utilisation du modèle entraîné pour traduire les phrases de test.**
 
 ```bash
 !onmt_translate -model /content/model_opennmt/model_step_10000.pt \
@@ -183,8 +183,8 @@ exp_global_attn: True  # ✅ Optimisation de l'attention pour mémoire limitée
 
 ---
 
-### **5️⃣ Évaluation avec SacreBLEU**
-💡 **Calcul de la qualité de la traduction à l'aide du score BLEU.**
+### **5️ Évaluation avec SacreBLEU**
+ **Calcul de la qualité de la traduction à l'aide du score BLEU.**
 
 ```bash
 !sacrebleu /content/data/split/Europarl_test_500.tok.true.fr \
@@ -192,15 +192,15 @@ exp_global_attn: True  # ✅ Optimisation de l'attention pour mémoire limitée
            -m bleu -b --force
 ```
 
-### 📌 Étape 5 : Entraînement du Modèle (Forme Lemmatisée)
+###  Étape 5 : Entraînement du Modèle (Forme Lemmatisée)
 
 ---
 
-### **1️⃣ Fichier de Configuration OpenNMT**
+### **1️ Fichier de Configuration OpenNMT**
 
 ```yaml
 %%writefile /content/opennmt_config.yaml
-## 🔹 Configuration pour corpus lemmatisé
+## Configuration pour corpus lemmatisé
 data:
     corpus_1:
         path_src: /content/data/split/Europarl_train_100k.lemma.en
@@ -216,7 +216,7 @@ data:
         path_tgt: /content/data/split/Europarl_dev_3750.lemma.fr
         transforms: [filtertoolong]
 
-## 🔹 Paramètres inchangés
+##  Paramètres inchangés
 src_vocab: /content/data/opennmt/vocab.src
 tgt_vocab: /content/data/opennmt/vocab.tgt
 train_steps: 10000
@@ -230,8 +230,8 @@ batch_size: 1024
 
 ---
 
-### **2️⃣ Fichier de Lemmatisation**
-💡 **Ce script applique la lemmatisation sur tous les corpus avant l'entraînement.**
+### **2️ Fichier de Lemmatisation**
+ **Ce script applique la lemmatisation sur tous les corpus avant l'entraînement.**
 
 ```python
 import spacy
@@ -266,8 +266,8 @@ Exécutez ensuite la lemmatisation :
 
 ---
 
-### **3️⃣ Création du Vocabulaire**
-💡 **Générer le vocabulaire utilisé pour l'entraînement.**
+### **3️ Création du Vocabulaire**
+ **Générer le vocabulaire utilisé pour l'entraînement.**
 
 ```bash
 !onmt_build_vocab -config /content/opennmt_config.yaml -save_data /content/data/opennmt -n_sample 10000
@@ -275,8 +275,8 @@ Exécutez ensuite la lemmatisation :
 
 ---
 
-### **4️⃣ Entraînement du Modèle**
-💡 **Lancer l'entraînement du modèle Transformer sur Colab avec les données lemmatisées.**
+### **4️ Entraînement du Modèle**
+ **Lancer l'entraînement du modèle Transformer sur Colab avec les données lemmatisées.**
 
 ```bash
 !onmt_train -config /content/opennmt_config.yaml
@@ -284,10 +284,10 @@ Exécutez ensuite la lemmatisation :
 
 ---
 
-### **5️⃣ Traduction**
-💡 **Utilisation du modèle entraîné pour traduire les phrases de test (Europarl et EMEA).**
+### **5️ Traduction**
+ **Utilisation du modèle entraîné pour traduire les phrases de test (Europarl et EMEA).**
 
-#### 🔹 **Traduction Europarl**
+####  **Traduction Europarl**
 ```bash
 !onmt_translate -model /content/model_opennmt/model_lemma_step_10000.pt \
                 -src /content/data/split/Europarl_test_500.lemma.en \
@@ -305,17 +305,17 @@ Exécutez ensuite la lemmatisation :
 
 ---
 
-### **6️⃣ Évaluation avec SacreBLEU**
-💡 **Calcul de la qualité de la traduction pour Europarl et EMEA.**
+### **6️ Évaluation avec SacreBLEU**
+ **Calcul de la qualité de la traduction pour Europarl et EMEA.**
 
-#### 🔹 **Évaluation Europarl**
+####  **Évaluation Europarl**
 ```bash
 !sacrebleu /content/data/split/Europarl_test_500.lemma.fr \
            -i /content/data/split/Europarl_test_500_translated_lemma.fr \
            -m bleu -b --force
 ```
 
-#### 🔹 **Évaluation EMEA**
+####  **Évaluation EMEA**
 ```bash
 !sacrebleu /content/data/split/Emea_test_500.lemma.fr \
            -i /content/data/split/Emea_test_500_translated_lemma.fr \
