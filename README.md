@@ -9,7 +9,7 @@ Nous explorons **deux approches linguistiques** :
 L'objectif est d'analyser **l'impact de la lemmatisation** sur la qualité des traductions en utilisant le **score BLEU**.
 
  **Exécution facile** : Copiez-collez chaque **cellule** de code dans un notebook **Google Colab** et exécutez-la directement.  
- **Attention** : L'entraînement du modèle peut être long.  
+ **Attention** : L'entraînement du modèle peut être long(En ce qui nous concerne, nous avons souscrit à l'abonnement Colab Pro pour obtenir des GPUs plus performats).  
 
 ### Étape 1 : Installation des Dépendances
  **À exécuter directement sur Colab**
@@ -295,7 +295,7 @@ Exécutez ensuite la lemmatisation :
                 -gpu 0
 ```
 
-#### 🔹 **Traduction EMEA**
+####  **Traduction EMEA**
 ```bash
 !onmt_translate -model /content/model_opennmt/model_lemma_step_10000.pt \
                 -src /content/data/split/Emea_test_500.lemma.en \
